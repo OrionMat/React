@@ -6,21 +6,8 @@ class List extends React.Component {
         super(props);
         this.state = {
             value: '',
-            toDos: [],
             editing: false,
         };
-    }
-    
-    handleChange(event) {
-        this.setState({value: event.target.value});
-    }
-    
-    handleSubmit(event) {
-        event.preventDefault();
-        const toDos = this.state.toDos.slice();
-        const addition = this.state.value;
-        this.setState({toDos: toDos.concat(addition)})
-        this.setState({value: ''})
     }
 
     handleEdit() {
@@ -28,10 +15,12 @@ class List extends React.Component {
     }
 
     handleSave() {
+        this.props.edit(this.refs.text.value, this.props.index)
         this.setState({editing: false})
     }
 
     handleDelete() {
+        this.props.delete(this.props.index);
     }
 
     renderNormal() {
@@ -39,7 +28,7 @@ class List extends React.Component {
             <div>
                 <div>{this.props.children}</div>
                 <button onClick={() => this.handleEdit()}>Edit</button>
-                <button onClick={() => this.handleDelete()}>Delete</button>    
+                <button onClick={(i) => this.handleDelete()}>Delete</button>    
             </div>
         );
     }
@@ -47,7 +36,7 @@ class List extends React.Component {
     renderEditing () {
         return (
             <div>
-                <textarea defaultValue={this.props.children}></textarea>
+                <textarea ref="text" defaultValue={this.props.children}></textarea>
                 <button onClick={() => this.handleSave()}>Save</button>
             </div>
         );
@@ -63,14 +52,70 @@ class List extends React.Component {
     }
 }
 
+class Container extends React.Component {
+    constructor (props) {
+        super(props);
+        this.state = {
+            value: '',
+            toDos: [],
+        }
+    }
+
+    deleteItem(i) {
+        console.log('removing item ' + i);
+        var toDos = this.state.toDos.slice();
+        delete toDos[i];
+        this.setState({toDos: toDos});
+    }
+
+    updateItem(text, i) {
+        console.log('updating item ' + i);
+        var toDos = this.state.toDos
+        toDos[i] = text;
+        this.setState({toDos: toDos});
+    }
+
+    renderItems(item, i) {
+        return (
+            <List 
+                key={i} index={i} 
+                delete={(i) => this.deleteItem(i)} 
+                edit={(text, i) => this.updateItem(text, i)}>
+                {item}
+            </List>
+        );
+    }
+
+    handleChange(event) {
+        this.setState({value: event.target.value});
+    }
+    
+    handleSubmit(event) {
+        event.preventDefault();
+        const toDos = this.state.toDos.slice();
+        const addition = this.state.value;
+        this.setState({toDos: toDos.concat(addition)})
+        this.setState({value: ''})
+    }
+
+    render () {
+        const toDos = this.state.toDos.slice()
+        return (
+            <div>
+                <h1>
+                    To-do List:
+                </h1>
+                {toDos.map((item, i) => this.renderItems(item, i))}
+                <form onSubmit={(event) => this.handleSubmit(event)}>
+                    <input type="text" placeholder="Add a to-do!" value={this.state.value} onChange={(event) => this.handleChange(event)} />
+                    <input type="submit" value="Add" />
+                </form>
+            </div>
+        );
+    }
+}
+
 ReactDOM.render(
-    <div>
-        <h1>
-            To-do List:
-        </h1>
-        <List>to-do 1</List>
-        <List>to-do 2</List>
-        <List>to-do 3</List>
-    </div>,
+    <Container/>,
     document.getElementById('root')
 );
