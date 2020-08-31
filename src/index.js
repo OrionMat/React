@@ -7,10 +7,8 @@ class List extends React.Component {
         this.state = {
             value: '',
             toDos: [],
+            editing: false,
         };
-
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
     }
     
     handleChange(event) {
@@ -24,6 +22,19 @@ class List extends React.Component {
         this.setState({toDos: toDos.concat(addition)})
         this.setState({value: ''})
     }
+
+    handleEdit() {
+        alert("Editing")
+        this.setState({editing: true})
+    }
+
+    handleSave() {
+        this.setState({editing: false})
+    }
+
+    handleDelete() {
+        alert("deleting")
+    }
     
     render() {
         return (
@@ -32,13 +43,13 @@ class List extends React.Component {
                     {this.state.toDos.map((el) => 
                         <div>
                             <div>{el}</div>
-                            <button>Edit</button>
-                            <button>Delete</button>    
+                            <button onClick={() => this.handleEdit()}>Edit</button>
+                            <button onClick={() => this.handleDelete()}>Delete</button>    
                         </div>                
                     )}
                 </div>
-                <form onSubmit={this.handleSubmit}>
-                    <input type="text" placeholder="Add a to-do!" value={this.state.value} onChange={this.handleChange} />
+                <form onSubmit={(event) => this.handleSubmit(event)}>
+                    <input type="text" placeholder="Add a to-do!" value={this.state.value} onChange={(event) => this.handleChange(event)} />
                     <input type="submit" value="Add" />
                 </form>
             </div>
