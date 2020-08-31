@@ -28,9 +28,15 @@ class List extends React.Component {
     render() {
         return (
             <div>
-                <ol>
-                    {this.state.toDos.map((el) => <li>{el}</li>)}
-                </ol>
+                <div>
+                    {this.state.toDos.map((el) => 
+                        <div>
+                            <div>{el}</div>
+                            <button>Edit</button>
+                            <button>Delete</button>    
+                        </div>                
+                    )}
+                </div>
                 <form onSubmit={this.handleSubmit}>
                     <input type="text" placeholder="Add a to-do!" value={this.state.value} onChange={this.handleChange} />
                     <input type="submit" value="Add" />
