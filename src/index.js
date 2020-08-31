@@ -24,7 +24,6 @@ class List extends React.Component {
     }
 
     handleEdit() {
-        alert("Editing")
         this.setState({editing: true})
     }
 
@@ -33,27 +32,34 @@ class List extends React.Component {
     }
 
     handleDelete() {
-        alert("deleting")
+    }
+
+    renderNormal() {
+        return (
+            <div>
+                <div>{this.props.children}</div>
+                <button onClick={() => this.handleEdit()}>Edit</button>
+                <button onClick={() => this.handleDelete()}>Delete</button>    
+            </div>
+        );
+    }
+
+    renderEditing () {
+        return (
+            <div>
+                <textarea defaultValue={this.props.children}></textarea>
+                <button onClick={() => this.handleSave()}>Save</button>
+            </div>
+        );
     }
     
     render() {
-        return (
-            <div>
-                <div>
-                    {this.state.toDos.map((el) => 
-                        <div>
-                            <div>{el}</div>
-                            <button onClick={() => this.handleEdit()}>Edit</button>
-                            <button onClick={() => this.handleDelete()}>Delete</button>    
-                        </div>                
-                    )}
-                </div>
-                <form onSubmit={(event) => this.handleSubmit(event)}>
-                    <input type="text" placeholder="Add a to-do!" value={this.state.value} onChange={(event) => this.handleChange(event)} />
-                    <input type="submit" value="Add" />
-                </form>
-            </div>
-        );
+        if (this.state.editing) {
+                return this.renderEditing();
+            }
+            else {
+                return this.renderNormal();
+            }
     }
 }
 
@@ -62,7 +68,9 @@ ReactDOM.render(
         <h1>
             To-do List:
         </h1>
-        <List/>
+        <List>to-do 1</List>
+        <List>to-do 2</List>
+        <List>to-do 3</List>
     </div>,
     document.getElementById('root')
 );
